@@ -5,9 +5,8 @@ import java.util.Scanner;
 public class Main {
 
     // 3. Определяем размеры массива
-    static final int SIZE_X = 5;
-    static final int SIZE_Y = 5;
-    static final int WIN_COUNT = 4;
+    static final int SIZE_X = 3;
+    static final int SIZE_Y = 3;
 
     // 1. Создаем двумерный массив
     static char[][] field = new char[SIZE_Y][SIZE_X];
@@ -52,122 +51,58 @@ public class Main {
     }
 
     // 9. Ход игрока
-    private static void playerStep(int y, int x) {
+    private static void playerStep() {
         // 11. с проверкой
-
+        int x;
+        int y;
+        do {
+            System.out.println("Введите координаты: X Y (1-3)");
+            x = scanner.nextInt() - 1;
+            y = scanner.nextInt() - 1;
+        } while (!isCellValid(y,x));
         setSym(y, x, PLAYER_DOT);
 
     }
 
     // 13. Ход ПК
-    private static void aiStep(int y, int x) {
-
-        int rand_x;
-        int rand_y;
+    private static void aiStep() {
+        int x;
+        int y;
         do{
-            rand_x = rand.nextInt(2) + x;
-            rand_y = rand.nextInt(2) + y;
-        } while(!isCellValid(rand_y,rand_x));
-
-        setSym(rand_y, rand_x, AI_DOT);
+            x = rand.nextInt(SIZE_X);
+            y = rand.nextInt(SIZE_Y);
+        } while(!isCellValid(y,x));
+        setSym(y, x, AI_DOT);
     }
 
     // 14. Проверка победы
     private static boolean checkWin(char sym) {
-
-        for (int i = 0; i < SIZE_X; i++){
-            int row_summ = 0;
-            int col_summ = 0;
-            for (int j = 0; j < SIZE_Y; j++){
-                if (field[i][j] == sym){
-                    row_summ++;
-                    if (row_summ == WIN_COUNT){
-                        return true;
-                    }
-                }
-                else {
-                    row_summ = 0;
-                }
-                if (field[j][i] == sym){
-                    col_summ++;
-                    if (col_summ == WIN_COUNT){
-                        return true;
-                    }
-                }
-                else {
-                    col_summ = 0;
-                }
-            }
+        if (field[0][0] == sym && field[0][1] == sym && field[0][2] == sym) {
+            return true;
+        }
+        if (field[1][0] == sym && field[1][1] == sym && field[1][2] == sym) {
+            return true;
+        }
+        if (field[2][0] == sym && field[2][1] == sym && field[2][2] == sym) {
+            return true;
         }
 
-        int diag_summ;
-        for (int i = 0; i < SIZE_X; i++){
-            diag_summ = 0;
-            for (int j = 0; j < SIZE_Y; j++){
-                if (j + i < SIZE_X){
-                    if (field[j][j+i] == sym){
-                        diag_summ++;
-                        if (diag_summ == WIN_COUNT){
-                            return true;
-                        }
-                    }
-                    else{
-                        diag_summ = 0;
-                    }
-                }
-            }
+        if (field[0][0] == sym && field[1][0] == sym && field[2][0] == sym) {
+            return true;
+        }
+        if (field[0][1] == sym && field[1][1] == sym && field[2][1] == sym) {
+            return true;
+        }
+        if (field[0][2] == sym && field[1][2] == sym && field[2][2] == sym) {
+            return true;
         }
 
-        for (int i = 1; i < SIZE_X; i++){
-            diag_summ = 0;
-            for (int j = 0; j < SIZE_Y; j++){
-                if (j - i >= 0){
-                    if (field[j][j-i] == sym){
-                        diag_summ++;
-                        if (diag_summ == WIN_COUNT){
-                            return true;
-                        }
-                    }
-                    else{
-                        diag_summ = 0;
-                    }
-                }
-            }
-        }
 
-        int inv_diag_summ;
-        for (int i = 0; i < SIZE_X; i++){
-            inv_diag_summ = 0;
-            for (int j = 0; j < SIZE_Y; j++){
-                if (SIZE_Y - 1 - j - i >= 0){
-                    if (field[j][SIZE_Y - 1 - j - i] == sym){
-                        inv_diag_summ++;
-                        if (inv_diag_summ == WIN_COUNT){
-                            return true;
-                        }
-                    }
-                    else{
-                        inv_diag_summ = 0;
-                    }
-                }
-            }
+        if (field[0][0] == sym && field[1][1] == sym && field[2][2] == sym) {
+            return true;
         }
-
-        for (int i = 1; i < SIZE_X; i++){
-            inv_diag_summ = 0;
-            for (int j = 0; j < SIZE_Y; j++){
-                if (SIZE_Y - 1 - j + i < SIZE_X){
-                    if (field[j][SIZE_Y - 1 - j + i] == sym){
-                        inv_diag_summ++;
-                        if (inv_diag_summ == WIN_COUNT){
-                            return true;
-                        }
-                    }
-                    else{
-                        inv_diag_summ = 0;
-                    }
-                }
-            }
+        if (field[2][0] == sym && field[1][1] == sym && field[0][2] == sym) {
+            return true;
         }
         return false;
     }
@@ -203,14 +138,7 @@ public class Main {
         // 15 Основной ход программы
 
         while (true) {
-            int x;
-            int y;
-            do {
-                System.out.println("Введите координаты: X Y (1-3)");
-                x = scanner.nextInt() - 1;
-                y = scanner.nextInt() - 1;
-            } while (!isCellValid(y,x));
-            playerStep(y, x);
+            playerStep();
             printField();
             if(checkWin(PLAYER_DOT)) {
                 System.out.println("Player WIN!");
@@ -221,7 +149,7 @@ public class Main {
                 break;
             }
 
-            aiStep(y, x);
+            aiStep();
             printField();
             if(checkWin(AI_DOT)) {
                 System.out.println("Win SkyNet!");
