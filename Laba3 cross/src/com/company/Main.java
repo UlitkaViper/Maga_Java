@@ -64,11 +64,49 @@ public class Main {
 
         int rand_x;
         int rand_y;
-        do{
-            rand_x = rand.nextInt(2) + x;
-            rand_y = rand.nextInt(2) + y;
-        } while(!isCellValid(rand_y,rand_x));
 
+        do {
+            rand_x = rand.nextInt(2);
+            if (rand_x == 0){
+                rand_x = x - 1;
+            }
+            else {
+                rand_x = x + 1;
+            }
+            rand_y = rand.nextInt(2);
+            if (rand_y == 0){
+                rand_y = y - 1;
+            }
+            else {
+                rand_y = y + 1;
+            }
+        } while (!isCellValid(rand_y, rand_x));
+
+        int row_count = 0;
+        int col_count = 0;
+        for (int i = 0; i < SIZE_X; i++) {
+            if (field[y][i] == PLAYER_DOT) {
+                row_count++;
+            }
+            if (row_count >= WIN_COUNT / 2) {
+                do {
+                    rand_x = rand.nextInt(SIZE_X);
+                    rand_y = y;
+                } while (!isCellValid(rand_y, rand_x));
+            }
+        }
+        for (int i = 0; i < SIZE_X; i++) {
+            if (field[i][x] == PLAYER_DOT) {
+                col_count++;
+            }
+            if (col_count >= WIN_COUNT / 2) {
+                System.out.println("132123");
+                do {
+                    rand_x = x;
+                    rand_y = rand.nextInt(SIZE_Y);
+                } while (!isCellValid(rand_y, rand_x));
+            }
+        }
         setSym(rand_y, rand_x, AI_DOT);
     }
 
@@ -100,6 +138,7 @@ public class Main {
             }
         }
 
+        // Главная диагональ
         int diag_summ;
         for (int i = 0; i < SIZE_X; i++){
             diag_summ = 0;
@@ -134,7 +173,7 @@ public class Main {
                 }
             }
         }
-
+        // Побочная диагональ
         int inv_diag_summ;
         for (int i = 0; i < SIZE_X; i++){
             inv_diag_summ = 0;
